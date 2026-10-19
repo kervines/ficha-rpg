@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#213b31" />
+    <meta name="description" content="Crie, organize e salve fichas de personagens de D&D neste navegador." />
+    <title>Ficha de Aventura — personagens de D&D</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="auth-view" id="authView">
+      <header class="brandbar">
+        <a class="brand" href="#" aria-label="Ficha de Aventura, início">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>FICHA <i>DE AVENTURA</i></span>
+        </a>
+        <span class="local-badge"><span class="status-dot"></span> ARQUIVO LOCAL</span>
+      </header>
+      <main class="auth-layout">
+        <section class="intro-panel">
+          <p class="eyebrow">SEU PRÓXIMO CAPÍTULO COMEÇA AQUI</p>
+          <h1>Personagens prontos.<br /><em>Histórias por viver.</em></h1>
+          <p class="intro-copy">Organize suas fichas em um só lugar e volte para a aventura sem perder o fio da história.</p>
+          <div class="intro-points">
+            <div><span class="point-icon">01</span><span><strong>Mais de um personagem</strong><small>Crie uma ficha para cada aventureiro.</small></span></div>
+            <div><span class="point-icon">02</span><span><strong>Salvo automaticamente</strong><small>Seus dados ficam neste navegador.</small></span></div>
+            <div><span class="point-icon">03</span><span><strong>Seu ritmo, sua mesa</strong><small>Preencha a ficha durante o jogo.</small></span></div>
+          </div>
+          <div class="intro-footnote">FEITO PARA A MESA, COM ESPAÇO PARA A IMAGINAÇÃO</div>
+        </section>
+
+        <section class="auth-card" aria-labelledby="authTitle">
+          <div class="auth-card-top">
+            <p class="eyebrow">BEM-VINDO À MESA</p>
+            <h2 id="authTitle">Entre no seu arquivo</h2>
+            <p id="authDescription">Entre com o usuário da conta e a senha. O nome do personagem não é usado para entrar.</p>
+          </div>
+          <div class="auth-switch" role="tablist" aria-label="Acesso">
+            <button class="auth-tab active" type="button" role="tab" aria-selected="true" data-auth-mode="login">Entrar</button>
+            <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-mode="signup">Criar perfil</button>
+          </div>
+          <form id="authForm" class="auth-form">
+            <label class="field" id="displayNameField" hidden>
+              <span>Nome visível do jogador</span>
+              <input name="displayName" type="text" maxlength="40" autocomplete="nickname" placeholder="Nome que aparecerá no perfil" />
+              <small>Este nome aparece dentro do perfil. Ele não é o usuário usado para entrar.</small>
+            </label>
+            <label class="field">
+              <span>Usuário da conta</span>
+              <input name="username" type="text" minlength="3" maxlength="24" autocomplete="username" autocapitalize="none" placeholder="Usuário" required />
+              <small>Digite o usuário cadastrado ao criar o perfil, não o nome do jogador nem do personagem. Use de 3 a 24 letras sem acento, números, ponto, traço ou sublinhado.</small>
+            </label>
+            <label class="field">
+              <span>Senha local</span>
+              <input name="password" type="password" minlength="8" autocomplete="current-password" placeholder="Pelo menos 8 caracteres" required />
+            </label>
+            <button class="button button-primary auth-submit" id="authSubmit" type="submit">Entrar</button>
+            <p class="form-message" id="authMessage" role="status" aria-live="polite"></p>
+          </form>
+          <div class="privacy-note"><span aria-hidden="true">◈</span><p><strong>Perfil local</strong><br />A conta e as fichas ficam neste navegador, sem sincronização. A senha abre o perfil, mas não criptografa as fichas. Não há recuperação de senha; exporte backups para guardar ou transferir os dados.</p></div>
+        </section>
+      </main>
+      <footer class="page-footer">FICHA DE AVENTURA <span>·</span> SEUS DADOS PERMANECEM NO SEU NAVEGADOR</footer>
+    </div>
+
+    <div class="app-view" id="appView" hidden>
+      <header class="app-topbar">
+        <a class="brand brand-light" href="#" id="homeLink" aria-label="Voltar ao início">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>FICHA <i>DE AVENTURA</i></span>
+        </a>
+        <div class="topbar-actions">
+          <button class="button button-quiet" id="backupButton" type="button" title="Baixar um backup das fichas desta conta">⤓ <span>Backup</span></button>
+          <div class="user-chip"><span class="avatar" id="userInitials">A</span><span id="userDisplayName">Aventureiro</span></div>
+          <button class="button button-quiet" id="logoutButton" type="button">Sair</button>
+        </div>
+      </header>
+
+      <div class="app-layout">
+        <aside class="sidebar">
+          <div class="sidebar-heading">
+            <p class="eyebrow">SEU ARQUIVO</p>
+            <button class="icon-button" id="sidebarNewButton" type="button" aria-label="Criar nova ficha" title="Criar nova ficha">＋</button>
+          </div>
+          <button class="nav-link active" id="allSheetsButton" type="button"><span class="nav-icon">▤</span> Todas as fichas <span class="count-pill" id="sheetCount">0</span></button>
+          <p class="sidebar-label">PERSONAGENS</p>
+          <div class="character-list" id="characterList"></div>
+          <button class="new-sheet-link" id="newSheetButton" type="button"><span>＋</span> Nova ficha</button>
+          <div class="sidebar-note"><span class="status-dot"></span><span>Salvamento automático<br /><small>neste navegador</small></span></div>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+          <section class="dashboard" id="dashboard">
+            <div class="welcome-banner">
+              <div>
+                <p class="eyebrow">SEU ARQUIVO DE AVENTURAS</p>
+                <h1>Olá, <span id="welcomeName">aventureiro</span>.</h1>
+                <p>Suas histórias começam com uma ficha. Crie uma nova ou continue de onde parou.</p>
+              </div>
+              <div class="banner-sigil" aria-hidden="true">✧</div>
+            </div>
+            <div class="section-heading">
+              <div><p class="eyebrow">PRONTOS PARA A MESA</p><h2>Suas fichas <span id="dashboardCount">(0)</span></h2></div>
+              <button class="button button-primary" id="dashboardNewButton" type="button">＋ Criar personagem</button>
+            </div>
+            <div class="sheet-grid" id="sheetGrid"></div>
+            <div class="empty-state" id="emptyState" hidden>
+              <div class="empty-emblem" aria-hidden="true">✦</div>
+              <h3>Sua próxima aventura começa com uma ficha</h3>
+              <p>Adicione um personagem e preencha os detalhes no seu ritmo. As alterações são salvas automaticamente.</p>
+              <button class="button button-primary" id="emptyNewButton" type="button">Criar primeira ficha</button>
+            </div>
+          </section>
+
+          <section class="character-editor" id="characterEditor" hidden>
+            <div class="editor-breadcrumb"><button id="backToDashboard" type="button">← Todas as fichas</button><span>/</span><span id="breadcrumbName">Personagem</span></div>
+            <div class="editor-heading">
+              <div><p class="eyebrow">FICHA DE PERSONAGEM</p><h1 id="editorTitle">Novo personagem</h1><p class="editor-subtitle" id="editorSubtitle">Preencha o que souber; você pode voltar e editar depois.</p></div>
+              <div class="editor-actions"><span class="save-status" id="saveStatus" role="status"><span class="status-dot"></span> Salvando localmente</span><button class="button button-outline export-button" id="exportPdfButton" type="button" title="Imprimir ou salvar esta ficha como PDF">▣ <span>Exportar PDF</span></button><button class="button button-outline" id="deleteCharacterButton" type="button">Excluir ficha</button></div>
+            </div>
+            <nav class="sheet-tabs" id="sheetTabs" role="tablist" aria-label="Seções da ficha">
+              <button type="button" class="sheet-tab active" data-tab="essentials" role="tab" aria-selected="true">Visão geral</button>
+              <button type="button" class="sheet-tab" data-tab="combat" role="tab" aria-selected="false">Combate</button>
+              <button type="button" class="sheet-tab" data-tab="skills" role="tab" aria-selected="false">Perícias</button>
+              <button type="button" class="sheet-tab" data-tab="story" role="tab" aria-selected="false">História</button>
+              <button type="button" class="sheet-tab" data-tab="inventory" role="tab" aria-selected="false">Inventário</button>
+              <button type="button" class="sheet-tab" data-tab="spells" role="tab" aria-selected="false">Conjuração</button>
+            </nav>
+            <section class="wizard-panel" id="wizardPanel" aria-label="Guia de criação" hidden></section>
+            <form id="editorForm" class="editor-form" autocomplete="off"></form>
+            <div class="wizard-footer" id="wizardFooter" hidden></div>
+            <details class="mobile-summary" id="mobileSummary">
+              <summary>
+                <span class="mobile-summary-identity"><small>EM AVENTURA</small><strong data-mobile-name>Personagem</strong></span>
+                <span class="mobile-summary-hp"><strong><span data-mobile-hp>0 / 0 PV</span></strong><i class="mobile-summary-track"><b data-mobile-hp-bar></b></i></span>
+                <span class="mobile-summary-level"><strong>Nv. <span data-mobile-level>1</span></strong><small><span data-mobile-ac>10</span> CA</small></span>
+                <span class="mobile-summary-caret" aria-hidden="true">⌃</span>
+              </summary>
+              <div class="mobile-summary-panel">
+                <div class="mobile-summary-panel-heading"><span data-mobile-class>Personagem</span><span>XP <strong data-mobile-xp>0</strong></span></div>
+                <div class="mobile-summary-health"><span>Pontos de vida</span><strong data-mobile-hp-detail>0 / 0 PV</strong><i class="mobile-summary-track" role="progressbar" aria-label="Pontos de vida" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><b data-mobile-hp-detail-bar></b></i></div>
+                <div class="mobile-summary-stats">
+                  <div><small>Classe de armadura</small><strong><span data-mobile-ac-detail>10</span> CA</strong></div>
+                  <div><small>Iniciativa</small><strong data-mobile-initiative>+0</strong></div>
+                  <div><small>Deslocamento</small><strong><span data-mobile-speed>0</span> pés</strong></div>
+                  <div><small>Proficiência</small><strong data-mobile-proficiency>+2</strong></div>
+                </div>
+              </div>
+            </details>
+          </section>
+        </main>
+      </div>
+      <footer class="app-footer">FICHA DE AVENTURA <span>·</span> DADOS SALVOS NO INDEXEDDB DESTE NAVEGADOR <span>·</span> <button type="button" id="importButton">Importar backup</button><input type="file" id="importFile" accept="application/json,.json" hidden /></footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="print-sheet" id="printSheet" aria-hidden="true"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
